@@ -1,48 +1,85 @@
+from customtkinter import *
 import os
-
-os.system("pip install openpyxl")
-
+from tkinter import *
 from openpyxl import load_workbook
-from openpyxl.utils import get_column_letter
+from openpyxl.utils import get_column_letter, column_index_from_string
 
+import keyboard
+import pyautogui
+import time
 
-f = []
-for i in os.listdir():
-	if i.endswith(".xlsx" or ".xls" or ".csv"):
-		f.append(i)
-		
-print("Planilhas: ")
-for o, b in enumerate(f, start=1):
-		print(f'{o}. {b}')
+set_appearance_mode("dark") 
+set_default_color_theme("blue")
 
-print("")
+t = CTk()
+t.geometry("800x500")
+t.resizable(False, False)
 
-planilha = int(input("Digite o número da planilha: ")) - 1
+entrada = CTkLabel(t, width=200, text="Selecione a planilha", font=("Arial", 20, "bold"))
+entrada.pack(pady=20)
 
-print("")
+f = [i for i in os.listdir() if i.endswith(".xlsx")]
 
-workbook = load_workbook(f[planilha])
-sheet = workbook.active 
-
-max_row = sheet.max_row
-max_column = sheet.max_column
-
-k = []
-for i in range(1, max_column+1):
-	k.append(get_column_letter(i))
+def io():
+	global cpf_column, nome_column, sheet, button
+	entrada.configure(text="bagulho aqui")
+	s = sheet.cell(1, cpf_column + 1).value
+	if "str" in str(type(s)):
+		sheet.delete_rows(1)
 	
-print("Colunas: ")
-for j, l in enumerate(k, start=1):
-	print(f"{j}. {l}")
+	time.sleep(10)
+	for i in sheet.values:
+		pyautogui.write(str(i[cpf_column]))
+		time.sleep(1)
+		pyautogui.press("tab")
+		time.sleep(1)
+		pyautogui.write(str(i[nome_column]))
+		time.sleep(1)
+		pyautogui.press("tab")
+		pyautogui.press("tab")
+		if keyboard.is_pressed("esc"):
+			break
 
-nome_column = int(input("\nDigite o número da coluna em que está o nome: ")) - 1
-cpf_column = int(input("Digite o número da coluna em que está o CPF: ")) - 1
-
-print("")
-
-s = sheet.cell(1, cpf_column + 1).value
-if "str" in str(type(s)):
-	sheet.delete_rows(1)
+def oii(event):
+	global cpf_column, nome_column, button, cb2
+	nome_column = column_index_from_string(event) - 1
 	
-for a in sheet.values:
-	print(a[nome_column], a[cpf_column])
+	cb2.pack_forget()
+	entrada.configure(text="Tudo certinho! Só apertar o botão abaixo para iniciar o processo.")
+	
+	button = CTkButton(t, text="iniciar", width=100, command=io).pack()
+
+def oi(column):
+    global cb1, k, cpf_column, cb2
+    cpf_column = column_index_from_string(column) - 1
+    entrada.configure(text="Selecione a coluna em que está o nome")
+    cb1.pack_forget()
+    
+    k = [x for x in k if x != column]
+	
+    cb2 = CTkComboBox(t, width=300, values=k, command=oii)
+    cb2.set("--selecione--")
+    cb2.pack()
+
+def value(event):
+    global k, cb1, sheet# Tornando k uma variável global
+    planilha = cb.get()
+    wb = load_workbook(planilha)
+    sheet = wb.active
+    
+    max_column = sheet.max_column
+    
+    k = [get_column_letter(i) for i in range(1, max_column + 1)]
+    
+    entrada.configure(text="Selecione a coluna em que está o CPF")
+    cb.pack_forget()
+
+    cb1 = CTkComboBox(t, width=300, values=k, command=oi)
+    cb1.set("--selecione--")
+    cb1.pack()
+
+cb = CTkComboBox(t, width=300, values=f, command=value)
+cb.set("--selecione--")
+cb.pack()
+
+t.mainloop()

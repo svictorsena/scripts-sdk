@@ -1,5 +1,5 @@
 $pythonInstallerUrl = "https://www.python.org/ftp/python/3.10.7/python-3.10.7-amd64.exe" 
-$pythonScriptUrl = "https://raw.githubusercontent.com/yusukesy/scripts-sdk/refs/heads/master/planilha.py"
+$pythonScriptUrl = "https://raw.githubusercontent.com/svictorsena/scripts-sdk/refs/heads/master/planilha.py"
 
 $pythonInstallerPath = "$env:TEMP\python-installer.exe"
 $pythonScriptPath = "$env:TEMP\script.py"

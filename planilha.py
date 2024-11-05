@@ -1,7 +1,10 @@
+import os
+
+os.system("pip install openpyxl")
+
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
-import os
 
 f = []
 for i in os.listdir():

@@ -2,7 +2,7 @@ $pythonInstallerUrl = "https://www.python.org/ftp/python/3.10.7/python-3.10.7-am
 $pythonScriptUrl = "https://raw.githubusercontent.com/yusukesy/scripts-sdk/refs/heads/master/planilha.py"
 
 $pythonInstallerPath = "$env:TEMP\python-installer.exe"
-$pythonScriptPath = "$env:TEMP\seuscript.py"
+$pythonScriptPath = "$env:TEMP\script.py"
 
 function Check-PythonInstalled {
     try {
